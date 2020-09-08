@@ -5,14 +5,6 @@ precision mediump float;
 uniform float u_time;
 uniform vec2 u_resolution;
 
-// return random vec2 w/ values b/w 0 and 1
-// vec2 random2(vec2 p) {
-//   return fract(sin(vec2(
-//     dot(p, vec2(127, 204)),
-//     dot(p, vec2(343, 175))
-//   ))*40000.0);
-// }
-
 vec2 random2( vec2 p ) {
     return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
 }
@@ -22,7 +14,7 @@ void main() {
   st.x *= u_resolution.x/u_resolution.y;
 
   // scale space
-  st *= 3.;
+  st *= 4.;
 
   // tile space
   vec2 i = floor(st);
@@ -66,8 +58,14 @@ void main() {
   }
 
   // normalize
-  color.bg = p1;
+  color.gb = p1;
   color.rg = p2;
+
+  // mark points in each subspace
+  // color += 1. - step(0.02, m_dist_1);
+
+  // Draw grid
+  // color.r += step(.98, f.x) + step(.98, f.y);
 
   gl_FragColor = vec4(color, 1.);
 }
