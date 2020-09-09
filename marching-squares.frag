@@ -9,8 +9,12 @@ uniform vec2 u_resolution;
 #define LINE_WIDTH 0.01
 #define UNIT_HYP_LEN 1.41421356237
 
-float randomFromVec2( vec2 p ) {
-    return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);
+float randomFromVec2(in vec2 p) {
+  return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);
+}
+
+bool randBool(in vec2 p) {
+	return randomFromVec2(p) > 0.5;
 }
 
 float filledCircle(in vec2 f_st) {
@@ -23,26 +27,69 @@ float emptyCircle(in vec2 f_st) {
 		* (step(CIRCLE_RAD - LINE_WIDTH, distFromOrigin));
 }
 
+int getState(bool a, bool b, bool c, bool d) {
+	return int(a) * 1
+			 + int(b) * 2
+			 + int(c) * 4
+			 + int(d) * 8;
+}
+
 void main() {
   vec2 st = gl_FragCoord.xy / u_resolution.xy;
   st.x *= u_resolution.x/u_resolution.y;
 
-	st *= 5.;
-	st += 10.;
+	st *= 16.;
 
 	vec2 i_st = floor(st);
 	vec2 f_st = fract(st);
 
 	// get points of subspace square
-	float randBotLeft = randomFromVec2(i_st);
-	float randBotRight = randomFromVec2(i_st + vec2(0., 1.));
-	float randUpLeft = randomFromVec2(i_st + vec2(1., 0.));
-	float randUpRight = randomFromVec2(i_st + vec2(1., 1.));
+	bool randBotLeft = randBool(i_st);
+	bool randBotRight = randBool(i_st + vec2(0., 1.));
+	bool randUpLeft = randBool(i_st + vec2(1., 0.));
+	bool randUpRight = randBool(i_st + vec2(1., 1.));
 
+	// get state of subspace
+	int state = getState(randBotLeft, randBotRight, randUpLeft, randUpRight);
+
+	// initialize color
 	vec3 color = vec3(0.);
-	color += step(0.5, f_st.x + f_st.y);
-	// color += step(.5, f_st.y - f_st.x);
-	// color += step(.5, f_st.x - f_st.y);
+
+	// handle each of 16 states
+	if (state == 1) {
+		color += 1. - step(0.5, f_st.x + f_st.y);
+	} else if (state == 2) {
+		color += step(0.5, f_st.x - f_st.y);
+	} else if (state == 3) {
+		color += step(0.5, 1. - f_st.y);
+	} else if (state == 4) {
+		color += step(0.5, f_st.y - f_st.x);
+	} else if (state == 5) {
+		color += step(0.5, 1. - f_st.x);
+	} else if (state == 6) {
+		color += step(0.5, f_st.x + f_st.y) * (1. - step(1.5, f_st.x + f_st.y));
+	} else if (state == 7) {
+		color += 1. - step(1.5, f_st.x + f_st.y);
+	} else if (state == 8) {
+		color += step(1.5, f_st.x + f_st.y);
+	} else if (state == 9) {
+		color += step(-0.5, f_st.y - f_st.x) * (1. - step(.5, f_st.y - f_st.x));
+	} else if (state == 10) {
+		color += step(0.5, f_st.x);
+	} else if (state == 11) {
+		color += step(-0.5, f_st.x - f_st.y);
+	} else if (state == 12) {
+		color += step(0.5, f_st.y);
+	} else if (state == 13) {
+		color += step(-0.5, f_st.y - f_st.x);
+	} else if (state == 14) {
+		color += step(0.5, f_st.x + f_st.y);
+	} else if (state == 15) {
+		color += 1.;
+	}
+
+	// invert
+	// color = 1. - color;
 
   gl_FragColor = vec4(color, 1.);
 }
