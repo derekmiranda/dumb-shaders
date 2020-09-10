@@ -9,11 +9,11 @@ uniform vec2 u_resolution;
 #define LINE_WIDTH 0.01
 #define PI 3.1415
 
-float randomFromVec2(in vec2 p) {
+float randomFromVec2_a(in vec2 p) {
   return fract(sin(dot(p,vec2(30.3331,320.5547)))*.8*u_time);
 }
 
-float randomFromVec2_b(in vec2 p) {
+float randomFromVec2(in vec2 p) {
   return fract(sin(dot(p,vec2(30.3331,32.5547)))*.8*u_time);
 }
 
@@ -56,8 +56,8 @@ void main() {
 
 	// get points of subspace square
 	bool randBotLeft = randBool(i_st);
-	bool randBotRight = randBool(i_st + vec2(0., 1.));
-	bool randUpLeft = randBool(i_st + vec2(1., 0.));
+	bool randBotRight = randBool(i_st + vec2(1., 0.));
+	bool randUpLeft = randBool(i_st + vec2(0., 1.));
 	bool randUpRight = randBool(i_st + vec2(1., 1.));
 
 	// get state of subspace

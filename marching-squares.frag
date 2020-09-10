@@ -38,7 +38,7 @@ void main() {
   vec2 st = gl_FragCoord.xy / u_resolution.xy;
   st.x *= u_resolution.x/u_resolution.y;
 
-	st *= 32.;
+	st *= 64.;
 
 	vec2 i_st = floor(st);
 	vec2 f_st = fract(st);
@@ -54,42 +54,39 @@ void main() {
 
 	// initialize color
 	vec3 color = vec3(0.);
-	float staticColor;
 
 	// handle each of 16 states
 	if (state == 1) {
-		staticColor = 1. - step(0.5, f_st.x + f_st.y);
+		color += 1. - step(.5, f_st.x + f_st.y);
 	} else if (state == 2) {
-		staticColor = step(0.5, f_st.x - f_st.y);
+		color += step(0.5, f_st.x - f_st.y);
 	} else if (state == 3) {
-		staticColor = step(0.5, 1. - f_st.y);
+		color += step(0.5, 1. - f_st.y);
 	} else if (state == 4) {
-		staticColor = step(0.5, f_st.y - f_st.x);
+		color += step(0.5, f_st.y - f_st.x);
 	} else if (state == 5) {
-		staticColor = step(0.5, 1. - f_st.x);
+		color += step(0.5, 1. - f_st.x);
 	} else if (state == 6) {
-		staticColor = step(0.5, f_st.x + f_st.y) * (1. - step(1.5, f_st.x + f_st.y));
+		color += step(0.5, f_st.x + f_st.y) * (1. - step(1.5, f_st.x + f_st.y));
 	} else if (state == 7) {
-		staticColor = 1. - step(1.5, f_st.x + f_st.y);
+		color += 1. - step(1.5, f_st.x + f_st.y);
 	} else if (state == 8) {
-		staticColor = step(1.5, f_st.x + f_st.y);
+		color += step(1.5, f_st.x + f_st.y);
 	} else if (state == 9) {
-		staticColor = step(-0.5, f_st.y - f_st.x) * (1. - step(0.5, f_st.y - f_st.x));
+		color += step(-0.5, f_st.y - f_st.x) * (1. - step(0.5, f_st.y - f_st.x));
 	} else if (state == 10) {
-		staticColor = step(0.5, f_st.x);
+		color += step(0.5, f_st.x);
 	} else if (state == 11) {
-		staticColor = step(-0.5, f_st.x - f_st.y);
+		color += step(-0.5, f_st.x - f_st.y);
 	} else if (state == 12) {
-		staticColor = step(0.5, f_st.y);
+		color += step(0.5, f_st.y);
 	} else if (state == 13) {
-		staticColor = step(-0.5, f_st.y - f_st.x);
+		color += step(-0.5, f_st.y - f_st.x);
 	} else if (state == 14) {
-		staticColor = step(0.5, f_st.x + f_st.y);
+		color += step(0.5, f_st.x + f_st.y);
 	} else if (state == 15) {
-		staticColor = 1.;
+		color += 1.;
 	}
-
-	color += staticColor; 
 
   gl_FragColor = vec4(color, 1.);
 }
