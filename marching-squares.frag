@@ -7,10 +7,10 @@ uniform vec2 u_resolution;
 
 #define CIRCLE_RAD 0.10
 #define LINE_WIDTH 0.01
-#define UNIT_HYP_LEN 1.41421356237
+#define PI 3.1415
 
 float randomFromVec2(in vec2 p) {
-  return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);
+  return fract(sin(dot(p,vec2(1023.3331,3223.5547)))*3234.53);
 }
 
 bool randBool(in vec2 p) {
@@ -40,8 +40,11 @@ void main() {
 
 	st *= 16.;
 
-	vec2 i_st = floor(st);
+	float time_disp = 1. * u_time;
+	vec2 st_timed = st + 5. * vec2(time_disp, sin(time_disp));
+	vec2 i_st = floor(st_timed);
 	vec2 f_st = fract(st);
+	vec2 f_st_timed = fract(st_timed);
 
 	// get points of subspace square
 	bool randBotLeft = randBool(i_st);
@@ -54,42 +57,58 @@ void main() {
 
 	// initialize color
 	vec3 color = vec3(0.);
+	float staticColor, dynamicColor;
 
 	// handle each of 16 states
 	if (state == 1) {
-		color += 1. - step(0.5, f_st.x + f_st.y);
+		staticColor = 1. - step(0.5, f_st.x + f_st.y);
+		dynamicColor = 1. - step(0.5, f_st_timed.x + f_st_timed.y);
 	} else if (state == 2) {
-		color += step(0.5, f_st.x - f_st.y);
+		staticColor = step(0.5, f_st.x - f_st.y);
+		dynamicColor = step(0.5, f_st_timed.x - f_st_timed.y);
 	} else if (state == 3) {
-		color += step(0.5, 1. - f_st.y);
+		staticColor = step(0.5, 1. - f_st.y);
+		dynamicColor = step(0.5, 1. - f_st_timed.y);
 	} else if (state == 4) {
-		color += step(0.5, f_st.y - f_st.x);
+		staticColor = step(0.5, f_st.y - f_st.x);
+		dynamicColor = step(0.5, f_st_timed.y - f_st_timed.x);
 	} else if (state == 5) {
-		color += step(0.5, 1. - f_st.x);
+		staticColor = step(0.5, 1. - f_st.x);
+		dynamicColor = step(0.5, 1. - f_st_timed.x);
 	} else if (state == 6) {
-		color += step(0.5, f_st.x + f_st.y) * (1. - step(1.5, f_st.x + f_st.y));
+		staticColor = step(0.5, f_st.x + f_st.y) * (1. - step(1.5, f_st.x + f_st.y));
+		dynamicColor = step(0.5, f_st_timed.x + f_st_timed.y) * (1. - step(1.5, f_st_timed.x + f_st_timed.y));
 	} else if (state == 7) {
-		color += 1. - step(1.5, f_st.x + f_st.y);
+		staticColor = 1. - step(1.5, f_st.x + f_st.y);
+		dynamicColor = 1. - step(1.5, f_st_timed.x + f_st_timed.y);
 	} else if (state == 8) {
-		color += step(1.5, f_st.x + f_st.y);
+		staticColor = step(1.5, f_st.x + f_st.y);
+		dynamicColor = step(1.5, f_st_timed.x + f_st_timed.y);
 	} else if (state == 9) {
-		color += step(-0.5, f_st.y - f_st.x) * (1. - step(.5, f_st.y - f_st.x));
+		staticColor = step(-0.5, f_st.y - f_st.x) * (1. - step(0.5, f_st.y - f_st.x));
+		dynamicColor = step(-0.5, f_st_timed.y - f_st_timed.x) * (1. - step(0.5, f_st_timed.y - f_st_timed.x));
 	} else if (state == 10) {
-		color += step(0.5, f_st.x);
+		staticColor = step(0.5, f_st.x);
+		dynamicColor = step(0.5, f_st_timed.x);
 	} else if (state == 11) {
-		color += step(-0.5, f_st.x - f_st.y);
+		staticColor = step(-0.5, f_st.x - f_st.y);
+		dynamicColor = step(-0.5, f_st_timed.x - f_st_timed.y);
 	} else if (state == 12) {
-		color += step(0.5, f_st.y);
+		staticColor = step(0.5, f_st.y);
+		dynamicColor = step(0.5, f_st_timed.y);
 	} else if (state == 13) {
-		color += step(-0.5, f_st.y - f_st.x);
+		staticColor = step(-0.5, f_st.y - f_st.x);
+		dynamicColor = step(-0.5, f_st_timed.y - f_st_timed.x);
 	} else if (state == 14) {
-		color += step(0.5, f_st.x + f_st.y);
+		staticColor = step(0.5, f_st.x + f_st.y);
+		dynamicColor = step(0.5, f_st_timed.x + f_st_timed.y);
 	} else if (state == 15) {
-		color += 1.;
+		staticColor = 1.;
+		dynamicColor = 1.;
 	}
 
-	// invert
-	// color = 1. - color;
+	color.rb += staticColor; 
+	color.gb += dynamicColor; 
 
   gl_FragColor = vec4(color, 1.);
 }
