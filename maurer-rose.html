@@ -32,9 +32,13 @@
 			noFill()
 			beginShape()
 			let r, k, x, y
+			const _d = d
+			// const _d = d + 0.001 * millis()
+			// const _n = n
+			const _n = 1.8 + 0.00001 * millis()
 			for (let i = 0; i < 361; i++) {
-				k = i * d
-				r = RADIUS * sin(n * k)
+				k = i * _d
+				r = RADIUS * sin(_n * k)
 				x = r * cos(k)
 				y = r * sin(k)
 				vertex(x, y)
